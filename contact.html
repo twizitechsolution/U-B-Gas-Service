@@ -180,12 +180,28 @@
             <div class="form-group">
               <label>Service Type *</label>
               <select name="service" required>
-                <option value="Gas Stove Repair">Gas Stove Repair (Low flame, leakage, knobs)</option>
-                <option value="Hob & Cooktop Service">Built-in Hob &amp; Glass Cooktop Service</option>
-                <option value="Burner & Auto Ignition Repair">Auto-Ignition &amp; Spark Repair</option>
-                <option value="Gas Leakage Check">Emergency Gas Leakage Check</option>
+                <option value="Gas Stove Repair & Service">Gas Stove Repair &amp; Service (Low flame, leakage, knobs)</option>
+                <option value="Built-in Hob & Cooktop Repair & Service">Built-in Hob &amp; Cooktop Repair &amp; Service</option>
+                <option value="Auto Ignition & Spark Repair & Service">Auto-Ignition &amp; Spark Repair &amp; Service</option>
+                <option value="Emergency Gas Leakage Check">Emergency Gas Leakage Check</option>
                 <option value="Doorstep Service & AMC">Doorstep Overhaul / AMC Maintenance</option>
-                <option value="Gas Pipeline & Installation">New Hob / Stove Installation</option>
+                <option value="New Hob & Gas Pipeline Installation">New Hob / Stove Installation</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Preferred Date *</label>
+              <input type="date" name="bookingDate" required>
+            </div>
+            <div class="form-group">
+              <label>Preferred Time Slot *</label>
+              <select name="bookingTime" required>
+                <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
+                <option value="Afternoon (12 PM - 3 PM)">Afternoon (12 PM - 3 PM)</option>
+                <option value="Evening (3 PM - 7 PM)" selected>Evening (3 PM - 7 PM)</option>
+                <option value="Night / Urgent (7 PM - 9 PM)">Night / Urgent (7 PM - 9 PM)</option>
               </select>
             </div>
           </div>

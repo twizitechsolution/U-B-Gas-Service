@@ -175,6 +175,21 @@
                 <option value="">Select Locality</option>
               </select>
             </div>
+            <div class="form-row" style="margin-bottom:16px">
+              <div class="form-group" style="margin-bottom:0">
+                <label>Preferred Date *</label>
+                <input type="date" name="bookingDate" required>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Preferred Time *</label>
+                <select name="bookingTime" required>
+                  <option value="Immediate / Emergency (Next 30–60 Min)" selected>Immediate / Emergency (Next 30–60 Min)</option>
+                  <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
+                  <option value="Afternoon (12 PM - 3 PM)">Afternoon (12 PM - 3 PM)</option>
+                  <option value="Evening (3 PM - 7 PM)">Evening (3 PM - 7 PM)</option>
+                </select>
+              </div>
+            </div>
             <div class="form-group">
               <label>Urgency Notes</label>
               <textarea name="message" rows="2" placeholder="e.g. Smelled gas near cylinder, regulator won't fit tightly..."></textarea>

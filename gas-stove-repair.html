@@ -145,7 +145,7 @@
         </p>
 
         <form data-booking-form novalidate>
-          <input type="hidden" name="service" value="Gas Stove Repair">
+          <input type="hidden" name="service" value="Gas Stove Repair &amp; Service">
           <div class="form-group">
             <label>Full Name *</label>
             <input type="text" name="customerName" placeholder="e.g. Ramesh Kulkarni" required>
@@ -159,6 +159,21 @@
             <select name="area" class="area-select" required>
               <option value="">Select Locality</option>
             </select>
+          </div>
+          <div class="form-row" style="margin-bottom:16px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Preferred Date *</label>
+              <input type="date" name="bookingDate" required>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Preferred Time *</label>
+              <select name="bookingTime" required>
+                <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
+                <option value="Afternoon (12 PM - 3 PM)">Afternoon (12 PM - 3 PM)</option>
+                <option value="Evening (3 PM - 7 PM)" selected>Evening (3 PM - 7 PM)</option>
+                <option value="Night / Urgent (7 PM - 9 PM)">Night / Urgent (7 PM - 9 PM)</option>
+              </select>
+            </div>
           </div>
           <div class="form-group">
             <label>Specific Issue</label>

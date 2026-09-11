@@ -208,7 +208,7 @@
         </p>
 
         <form data-booking-form>
-          <input type="hidden" name="service" value="Doorstep Service & AMC">
+          <input type="hidden" name="service" value="Doorstep Service &amp; Annual AMC">
           <div class="form-group" style="margin-bottom:16px">
             <label style="display:block;font-weight:600;font-size:0.88rem;color:var(--text-dark);margin-bottom:6px">Your Name</label>
             <input type="text" name="customerName" class="form-control" placeholder="e.g. Aniket Deshpande" required>
@@ -222,6 +222,21 @@
             <select name="area" class="form-control area-select" required>
               <option value="">Select Locality in Pune</option>
             </select>
+          </div>
+          <div class="form-row" style="margin-bottom:16px">
+            <div class="form-group" style="margin-bottom:0">
+              <label style="display:block;font-weight:600;font-size:0.88rem;color:var(--text-dark);margin-bottom:6px">Preferred Date</label>
+              <input type="date" name="bookingDate" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label style="display:block;font-weight:600;font-size:0.88rem;color:var(--text-dark);margin-bottom:6px">Preferred Time</label>
+              <select name="bookingTime" class="form-control" required>
+                <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
+                <option value="Afternoon (12 PM - 3 PM)">Afternoon (12 PM - 3 PM)</option>
+                <option value="Evening (3 PM - 7 PM)" selected>Evening (3 PM - 7 PM)</option>
+                <option value="Night / Urgent (7 PM - 9 PM)">Night / Urgent (7 PM - 9 PM)</option>
+              </select>
+            </div>
           </div>
           <div class="form-group" style="margin-bottom:20px">
             <label style="display:block;font-weight:600;font-size:0.88rem;color:var(--text-dark);margin-bottom:6px">Requirement</label>

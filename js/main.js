@@ -191,6 +191,13 @@ function initNav() {
 
 // 6. Booking Forms Submission & Modal Dialog
 function initBookingForms() {
+  // Set default and minimum date to today
+  const todayStr = new Date().toISOString().split('T')[0];
+  document.querySelectorAll('input[type="date"]').forEach(inp => {
+    inp.min = todayStr;
+    if (!inp.value) inp.value = todayStr;
+  });
+
   document.querySelectorAll('form[data-booking-form], #enquiry-form').forEach(form => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -199,12 +206,16 @@ function initBookingForms() {
       const phoneInput = form.querySelector('[name="phone"]') || form.querySelector('#phone');
       const areaInput = form.querySelector('[name="area"]') || form.querySelector('#area');
       const serviceInput = form.querySelector('[name="service"]') || form.querySelector('#service');
+      const dateInput = form.querySelector('[name="bookingDate"]') || form.querySelector('[name="date"]');
+      const timeInput = form.querySelector('[name="bookingTime"]') || form.querySelector('[name="time"]');
       const msgInput = form.querySelector('[name="message"]') || form.querySelector('#message');
 
       const name = nameInput ? nameInput.value.trim() : 'Customer';
       const phone = phoneInput ? phoneInput.value.trim() : '';
       const area = areaInput ? areaInput.value.trim() : 'Pune';
-      const service = serviceInput ? serviceInput.value.trim() : 'Gas Stove Repair';
+      const service = serviceInput ? serviceInput.value.trim() : 'Gas Stove Repair & Service';
+      const date = dateInput ? dateInput.value.trim() : '';
+      const time = timeInput ? timeInput.value.trim() : '';
       const message = msgInput ? msgInput.value.trim() : '';
 
       if (!phone || phone.length < 10) {
@@ -218,14 +229,17 @@ function initBookingForms() {
         phone,
         area,
         service,
+        date,
+        time,
         message
-      }) : { id: 'BK-' + Math.floor(1000 + Math.random() * 9000), customerName: name, phone, area, service, message };
+      }) : { id: 'BK-' + Math.floor(1000 + Math.random() * 9000), customerName: name, phone, area, service, date, time, message };
 
       // Show confirmation modal
       showBookingModal(newBooking);
 
-      // Reset form
+      // Reset form & restore default date
       form.reset();
+      if (dateInput) dateInput.value = todayStr;
     });
   });
 }
@@ -241,12 +255,14 @@ function showBookingModal(booking) {
   }
 
   const settings = window.UBStore ? window.UBStore.getSettings() : { whatsapp: '919185280029' };
+  const scheduleInfo = (booking.date || booking.time) ? `${booking.date || 'Flexible'} (${booking.time || 'Standard'})` : 'Earliest Slot';
   const waMsg = encodeURIComponent(
     `🔥 *URGENT SERVICE BOOKING [${booking.id}]*\n\n` +
     `👤 *Name:* ${booking.customerName}\n` +
     `📞 *Phone:* ${booking.phone}\n` +
     `📍 *Area:* ${booking.area}\n` +
     `🛠️ *Service:* ${booking.service}\n` +
+    `📅 *Preferred Slot:* ${scheduleInfo}\n` +
     (booking.message ? `📝 *Issue:* ${booking.message}\n\n` : '\n') +
     `Please confirm the technician arrival time.`
   );
@@ -263,6 +279,7 @@ function showBookingModal(booking) {
       <div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;text-align:left;font-size:0.9rem;">
         <div style="margin-bottom:4px;"><b>🛠️ Service:</b> ${booking.service}</div>
         <div style="margin-bottom:4px;"><b>📍 Area:</b> ${booking.area}</div>
+        <div style="margin-bottom:4px;"><b>📅 Date &amp; Time:</b> ${scheduleInfo}</div>
         <div><b>📞 Phone:</b> ${booking.phone}</div>
       </div>
 
@@ -292,7 +309,7 @@ function showBookingModal(booking) {
 
 // 7. Counters Animation
 function initCounters() {
-  const counters = document.querySelectorAll('.counter-num, .stat-count');
+  const counters = document.querySelectorAll('.stat-count[data-target], .counter-num[data-target]');
   if (!counters.length) return;
 
   const observer = new IntersectionObserver((entries) => {

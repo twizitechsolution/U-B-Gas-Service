@@ -133,7 +133,7 @@ function renderBookingsTable(filterStatus = 'all', searchQuery = '') {
   }
 
   if (bookings.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#94a3b8;">No bookings found matching criteria.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:30px;color:#94a3b8;">No bookings found matching criteria.</td></tr>`;
     return;
   }
 
@@ -157,6 +157,10 @@ function renderBookingsTable(filterStatus = 'all', searchQuery = '') {
         <td><a href="${telUrl}" style="color:#60a5fa">📞 ${escapeHtml(b.phone)}</a></td>
         <td>📍 ${escapeHtml(b.area)}</td>
         <td>🛠️ ${escapeHtml(b.service)}</td>
+        <td>
+          <div style="font-weight:600;color:#f8fafc;font-size:0.85rem">📅 ${escapeHtml(b.date || 'Flexible')}</div>
+          <div style="font-size:0.78rem;color:#f59e0b">⏰ ${escapeHtml(b.time || 'Standard')}</div>
+        </td>
         <td>
           <select class="select-filter" style="padding:4px 8px;font-size:0.8rem;" onchange="handleStatusChange('${b.id}', this.value)">
             <option value="New" ${b.status === 'New' ? 'selected' : ''}>New</option>

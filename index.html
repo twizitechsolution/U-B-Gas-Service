@@ -172,12 +172,29 @@
             <div class="form-group">
               <label>Service Needed</label>
               <select name="service" class="form-control">
-                <option value="Gas Stove Repair (Standard 2/3/4 Burner)">Gas Stove Repair (Standard 2/3/4 Burner)</option>
-                <option value="Built-in Hob & Cooktop Repair">Built-in Hob &amp; Cooktop Repair</option>
-                <option value="Auto Ignition & Spark Repair">Auto Ignition &amp; Spark Repair</option>
+                <option value="Gas Stove Repair & Service (Standard 2/3/4 Burner)">Gas Stove Repair &amp; Service (Standard 2/3/4 Burner)</option>
+                <option value="Built-in Hob & Cooktop Repair & Service">Built-in Hob &amp; Cooktop Repair &amp; Service</option>
+                <option value="Auto Ignition & Spark Repair & Service">Auto Ignition &amp; Spark Repair &amp; Service</option>
                 <option value="Emergency Gas Leakage Check">Emergency Gas Leakage Check</option>
-                <option value="Annual Maintenance Contract (AMC)">Annual Maintenance (AMC)</option>
+                <option value="Annual Maintenance Contract (AMC)">Annual Maintenance Contract (AMC)</option>
+                <option value="New Hob & Gas Pipeline Installation">New Hob &amp; Gas Pipeline Installation</option>
               </select>
+            </div>
+
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Preferred Date</label>
+                <input type="date" name="bookingDate" class="form-control" required>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Preferred Time</label>
+                <select name="bookingTime" class="form-control" required>
+                  <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
+                  <option value="Afternoon (12 PM - 3 PM)">Afternoon (12 PM - 3 PM)</option>
+                  <option value="Evening (3 PM - 7 PM)" selected>Evening (3 PM - 7 PM)</option>
+                  <option value="Night / Urgent (7 PM - 9 PM)">Night / Urgent (7 PM - 9 PM)</option>
+                </select>
+              </div>
             </div>
 
             <button type="submit" class="btn-primary btn-block" style="padding:14px;font-size:1.02rem;margin-top:6px;">
@@ -332,86 +349,127 @@
       <div class="services-grid">
         <!-- Service 1 -->
         <div class="service-card">
-          <div class="service-icon-wrap">🍳</div>
-          <div class="service-price">Starting @ ₹199</div>
-          <h3>Gas Stove Repair</h3>
-          <p>Complete troubleshooting for low flame, burner carbon blockage, uneven blue flame, leaking nozzle pipe, and stiff valve knobs.</p>
-          <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
-            <li>✓ Deep burner descaling &amp; cleaning</li>
-            <li>✓ Valve spindle lubrication &amp; alignment</li>
-            <li>✓ Multi-point pressure leak check</li>
-          </ul>
-          <div style="display:flex;gap:8px;margin-top:auto">
-            <a href="gas-stove-repair.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Learn More</a>
-            <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Book</a>
+          <div class="service-card-img-wrap">
+            <img src="images/services/gas-stove-repair.jpg" alt="Gas Stove Repair & Service" class="service-card-img" loading="lazy">
+            <span class="service-card-badge">Starting @ ₹199</span>
+          </div>
+          <div class="service-card-body">
+            <h3>Gas Stove Repair &amp; Service</h3>
+            <p>Complete troubleshooting for low flame, burner carbon blockage, uneven blue flame, leaking nozzle pipe, and stiff valve knobs.</p>
+            <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
+              <li>✓ Deep burner descaling &amp; cleaning</li>
+              <li>✓ Valve spindle lubrication &amp; alignment</li>
+              <li>✓ Multi-point pressure leak check</li>
+            </ul>
+            <div style="display:flex;gap:8px;margin-top:auto">
+              <a href="gas-stove-repair.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Learn More</a>
+              <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Book</a>
+            </div>
           </div>
         </div>
 
         <!-- Service 2 -->
         <div class="service-card">
-          <div class="service-icon-wrap">🔥</div>
-          <div class="service-price">Starting @ ₹299</div>
-          <h3>Built-in Hob &amp; Cooktop Service</h3>
-          <p>Delicate handling of toughened glass hobs, multi-ring brass burners, internal gas manifold leakages, and glass-top dismounting.</p>
-          <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
-            <li>✓ Toughened glass safe disassembly</li>
-            <li>✓ Italian/Sabaf burner ring servicing</li>
-            <li>✓ Internal tubing seal replacements</li>
-          </ul>
-          <div style="display:flex;gap:8px;margin-top:auto">
-            <a href="hob-cooktop-repair.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Learn More</a>
-            <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Book</a>
+          <div class="service-card-img-wrap">
+            <img src="images/services/hob-cooktop-repair.jpg" alt="Built-in Hob & Cooktop Repair & Service" class="service-card-img" loading="lazy">
+            <span class="service-card-badge">Starting @ ₹299</span>
+          </div>
+          <div class="service-card-body">
+            <h3>Built-in Hob &amp; Cooktop Repair &amp; Service</h3>
+            <p>Delicate handling of toughened glass hobs, multi-ring brass burners, internal gas manifold leakages, and glass-top dismounting.</p>
+            <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
+              <li>✓ Toughened glass safe disassembly</li>
+              <li>✓ Italian/Sabaf burner ring servicing</li>
+              <li>✓ Internal tubing seal replacements</li>
+            </ul>
+            <div style="display:flex;gap:8px;margin-top:auto">
+              <a href="hob-cooktop-repair.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Learn More</a>
+              <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Book</a>
+            </div>
           </div>
         </div>
 
         <!-- Service 3 -->
         <div class="service-card">
-          <div class="service-icon-wrap">⚡</div>
-          <div class="service-price">Starting @ ₹249</div>
-          <h3>Auto Ignition &amp; Spark Repair</h3>
-          <p>Fix for continuous clicking sounds, dead spark plugs, faulty pulse generator units, corroded microswitches, or battery replacements.</p>
-          <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
-            <li>✓ Spark electrode gap readjustment</li>
-            <li>✓ Pulse generator box renewal</li>
-            <li>✓ Push-button switch rewiring</li>
-          </ul>
-          <div style="display:flex;gap:8px;margin-top:auto">
-            <a href="burner-ignition-repair.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Learn More</a>
-            <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Book</a>
+          <div class="service-card-img-wrap">
+            <img src="images/services/burner-ignition-repair.jpg" alt="Auto Ignition & Spark Repair & Service" class="service-card-img" loading="lazy">
+            <span class="service-card-badge">Starting @ ₹249</span>
+          </div>
+          <div class="service-card-body">
+            <h3>Auto Ignition &amp; Spark Repair &amp; Service</h3>
+            <p>Fix for continuous clicking sounds, dead spark plugs, faulty pulse generator units, corroded microswitches, or battery replacements.</p>
+            <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
+              <li>✓ Spark electrode gap readjustment</li>
+              <li>✓ Pulse generator box renewal</li>
+              <li>✓ Push-button switch rewiring</li>
+            </ul>
+            <div style="display:flex;gap:8px;margin-top:auto">
+              <a href="burner-ignition-repair.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Learn More</a>
+              <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Book</a>
+            </div>
           </div>
         </div>
 
         <!-- Service 4 -->
         <div class="service-card">
-          <div class="service-icon-wrap">⚠️</div>
-          <div class="service-price" style="color:#ef4444">Urgent Dispatch</div>
-          <h3>Emergency Gas Leakage Check</h3>
-          <p>High-priority immediate technician visit with specialized electronic leak detectors, safety soap test, and certified Suraksha hose replacement.</p>
-          <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
-            <li>✓ High-sensitivity electronic gas detection</li>
-            <li>✓ Regulator &amp; cylinder O-ring testing</li>
-            <li>✓ Steel-braided safety hose installation</li>
-          </ul>
-          <div style="display:flex;gap:8px;margin-top:auto">
-            <a href="gas-leakage-check.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Learn More</a>
-            <a data-tel href="tel:+919185280029" class="btn-primary" style="padding:8px 14px;font-size:0.85rem">📞 Call Now</a>
+          <div class="service-card-img-wrap">
+            <img src="images/services/gas-leakage-check.jpg" alt="Emergency Gas Leakage Check" class="service-card-img" loading="lazy">
+            <span class="service-card-badge" style="color:#ef4444;border-color:rgba(239,68,68,0.4)">Urgent Dispatch</span>
+          </div>
+          <div class="service-card-body">
+            <h3>Emergency Gas Leakage Check</h3>
+            <p>High-priority immediate technician visit with specialized electronic leak detectors, safety soap test, and certified Suraksha hose replacement.</p>
+            <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
+              <li>✓ High-sensitivity electronic gas detection</li>
+              <li>✓ Regulator &amp; cylinder O-ring testing</li>
+              <li>✓ Steel-braided safety hose installation</li>
+            </ul>
+            <div style="display:flex;gap:8px;margin-top:auto">
+              <a href="gas-leakage-check.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Learn More</a>
+              <a data-tel href="tel:+919185280029" class="btn-primary" style="padding:8px 14px;font-size:0.85rem">📞 Call Now</a>
+            </div>
           </div>
         </div>
 
         <!-- Service 5 -->
         <div class="service-card">
-          <div class="service-icon-wrap">🛡️</div>
-          <div class="service-price">From ₹899 / Year</div>
-          <h3>Doorstep AMC Maintenance</h3>
-          <p>Annual Maintenance Contracts for homes and cloud kitchens in Pune. Includes routine deep cleans, priority breakdown visits, and spare parts discount.</p>
-          <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
-            <li>✓ Scheduled bi-annual safety audits</li>
-            <li>✓ 15% discount on all OEM components</li>
-            <li>✓ Free priority emergency callouts</li>
-          </ul>
-          <div style="display:flex;gap:8px;margin-top:auto">
-            <a href="doorstep-service.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">View AMC Plans</a>
-            <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Inquire</a>
+          <div class="service-card-img-wrap">
+            <img src="images/services/doorstep-service.jpg" alt="Doorstep Service & AMC Maintenance" class="service-card-img" loading="lazy">
+            <span class="service-card-badge">From ₹899 / Year</span>
+          </div>
+          <div class="service-card-body">
+            <h3>Doorstep Service &amp; Annual AMC</h3>
+            <p>Annual Maintenance Contracts for homes and cloud kitchens in Pune. Includes routine deep cleans, priority breakdown visits, and spare parts discount.</p>
+            <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
+              <li>✓ Scheduled bi-annual safety audits</li>
+              <li>✓ 15% discount on all OEM components</li>
+              <li>✓ Free priority emergency callouts</li>
+            </ul>
+            <div style="display:flex;gap:8px;margin-top:auto">
+              <a href="doorstep-service.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">View AMC Plans</a>
+              <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Inquire</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="service-card">
+          <div class="service-card-img-wrap">
+            <img src="images/services/hob-installation.jpg" alt="New Hob & Gas Pipeline Installation" class="service-card-img" loading="lazy">
+            <span class="service-card-badge">Starting @ ₹399</span>
+          </div>
+          <div class="service-card-body">
+            <h3>New Hob &amp; Pipeline Installation</h3>
+            <p>Kitchen granite counter cutting, flush-mount hob fitting, copper/flexible pipeline routing, and certified pressure leak testing for new homes.</p>
+            <ul class="service-points" style="margin-bottom:14px;font-size:0.88rem;color:var(--text-light);line-height:1.6">
+              <li>✓ Precision countertop cutout &amp; sealing</li>
+              <li>✓ Copper / flexible pipe safe routing</li>
+              <li>✓ Flame calibration &amp; pressure test</li>
+            </ul>
+            <div style="display:flex;gap:8px;margin-top:auto">
+              <a href="contact.html" class="btn-outline" style="flex:1;padding:8px 12px;font-size:0.85rem">Book Installation</a>
+              <a data-wa href="#" class="btn-whatsapp" style="padding:8px 14px;font-size:0.85rem">💬 Book</a>
+            </div>
           </div>
         </div>
       </div>

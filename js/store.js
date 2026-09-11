@@ -24,8 +24,8 @@ const DEFAULT_AREAS = [
 const DEFAULT_SERVICES = [
   {
     slug: 'gas-stove-repair',
-    name: 'Gas Stove Repair',
-    icon: '🔥',
+    name: 'Gas Stove Repair & Service',
+    image: 'images/services/gas-stove-repair.jpg',
     short: 'Low flame, gas leaks, broken knobs, clogged burners & uneven flames fixed on the spot.',
     price: 'Starting ₹199',
     time: '30–60 min',
@@ -33,8 +33,8 @@ const DEFAULT_SERVICES = [
   },
   {
     slug: 'hob-cooktop-repair',
-    name: 'Hob & Cooktop Repair',
-    icon: '🍳',
+    name: 'Hob & Cooktop Repair & Service',
+    image: 'images/services/hob-cooktop-repair.jpg',
     short: 'Built-in hobs & glass cooktops — burner replacement, glass fitting, valve repair & deep cleaning.',
     price: 'Starting ₹299',
     time: '45–90 min',
@@ -42,8 +42,8 @@ const DEFAULT_SERVICES = [
   },
   {
     slug: 'burner-ignition-repair',
-    name: 'Burner & Auto Ignition Repair',
-    icon: '⚡',
+    name: 'Burner & Auto Ignition Repair & Service',
+    image: 'images/services/burner-ignition-repair.jpg',
     short: 'Auto-ignition not sparking? Spark modules, batteries, ignition pins & brass burners fixed.',
     price: 'Starting ₹249',
     time: '30–45 min',
@@ -51,8 +51,8 @@ const DEFAULT_SERVICES = [
   },
   {
     slug: 'gas-leakage-check',
-    name: 'Gas Leakage Check',
-    icon: '🛡️',
+    name: 'Gas Leakage Safety Check',
+    image: 'images/services/gas-leakage-check.jpg',
     short: 'Emergency safety leak inspection for pipes, regulators & connections with soap-solution testing.',
     price: 'Starting ₹149',
     time: 'Priority 30 min',
@@ -60,12 +60,21 @@ const DEFAULT_SERVICES = [
   },
   {
     slug: 'doorstep-service',
-    name: 'Doorstep Service & AMC',
-    icon: '🏠',
+    name: 'Doorstep Service & Annual AMC',
+    image: 'images/services/doorstep-service.jpg',
     short: 'Fully-equipped technicians at your home — inspect, quote & repair. Plus annual maintenance plans.',
-    price: 'Visit ₹149 (adjusted in repair)',
+    price: 'From ₹899 / Year',
     time: 'One-visit fix',
     page: 'doorstep-service.html'
+  },
+  {
+    slug: 'hob-installation',
+    name: 'New Hob & Pipeline Installation',
+    image: 'images/services/hob-installation.jpg',
+    short: 'Granite counter cutting, flush-mount cooktop fitting, gas pipeline routing and pressure testing.',
+    price: 'Starting ₹399',
+    time: '60–90 min',
+    page: 'contact.html'
   }
 ];
 
@@ -106,7 +115,9 @@ const DEFAULT_INITIAL_BOOKINGS = [
     customerName: 'Rohit Verma',
     phone: '9822145670',
     area: 'Wakad, Pune',
-    service: 'Hob & Cooktop Repair',
+    service: 'Hob & Cooktop Repair & Service',
+    date: '2026-09-11',
+    time: 'Evening (3 PM - 7 PM)',
     message: 'Auto ignition not sparking and yellow flame on right burner.',
     status: 'In Progress',
     createdAt: new Date(Date.now() - 3600000 * 4).toISOString()
@@ -116,7 +127,9 @@ const DEFAULT_INITIAL_BOOKINGS = [
     customerName: 'Sneha Patil',
     phone: '9890456123',
     area: 'Kothrud, Pune',
-    service: 'Gas Leakage Check',
+    service: 'Emergency Gas Leakage Check',
+    date: '2026-09-10',
+    time: 'Morning (9 AM - 12 PM)',
     message: 'Slight gas smell near regulator connection.',
     status: 'Completed',
     createdAt: new Date(Date.now() - 3600000 * 24).toISOString()
@@ -126,7 +139,9 @@ const DEFAULT_INITIAL_BOOKINGS = [
     customerName: 'Amit Gokhale',
     phone: '9764512390',
     area: 'Baner, Pune',
-    service: 'Gas Stove Repair',
+    service: 'Gas Stove Repair & Service',
+    date: '2026-09-11',
+    time: 'Afternoon (12 PM - 3 PM)',
     message: 'Both knobs are stiff and flame is very low.',
     status: 'New',
     createdAt: new Date(Date.now() - 3600000 * 1).toISOString()
@@ -234,7 +249,9 @@ class Store {
       customerName: bookingData.name || 'Customer',
       phone: bookingData.phone || '',
       area: bookingData.area || 'Pune',
-      service: bookingData.service || 'Gas Stove Repair',
+      service: bookingData.service || 'Gas Stove Repair & Service',
+      date: bookingData.date || '',
+      time: bookingData.time || '',
       message: bookingData.message || '',
       status: 'New',
       createdAt: new Date().toISOString()
@@ -266,13 +283,15 @@ class Store {
   exportCSV() {
     const bookings = this.getBookings();
     if (!bookings.length) return '';
-    const headers = ['Booking ID', 'Customer Name', 'Phone', 'Area', 'Service', 'Notes', 'Status', 'Date Time'];
+    const headers = ['Booking ID', 'Customer Name', 'Phone', 'Area', 'Service', 'Preferred Date', 'Preferred Time', 'Notes', 'Status', 'Created At'];
     const rows = bookings.map(b => [
       `"${b.id}"`,
       `"${(b.customerName || '').replace(/"/g, '""')}"`,
       `"${(b.phone || '').replace(/"/g, '""')}"`,
       `"${(b.area || '').replace(/"/g, '""')}"`,
       `"${(b.service || '').replace(/"/g, '""')}"`,
+      `"${(b.date || '').replace(/"/g, '""')}"`,
+      `"${(b.time || '').replace(/"/g, '""')}"`,
       `"${(b.message || '').replace(/"/g, '""')}"`,
       `"${b.status}"`,
       `"${new Date(b.createdAt).toLocaleString('en-IN')}"`
