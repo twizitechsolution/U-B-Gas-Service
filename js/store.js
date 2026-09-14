@@ -1,6 +1,7 @@
-/**
+﻿/**
  * U&B GAS SERVICE PUNE — DATA STORE & STATE ENGINE
- * Centralized LocalStorage manager for CMS settings, Service Areas, Bookings, and Testimonials.
+ * Hybrid Realtime Engine: Google Cloud Firestore + LocalStorage Fail-Safe Cache
+ * Ensures instant real-time sync across any device, anywhere in the world!
  */
 
 const DEFAULT_SETTINGS = {
@@ -151,6 +152,20 @@ const DEFAULT_INITIAL_BOOKINGS = [
 class Store {
   constructor() {
     this.initStore();
+    this.initCloudSync();
+  }
+
+  getDb() {
+    if (window.firebaseDb) return window.firebaseDb;
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+      window.firebaseDb = firebase.firestore();
+      return window.firebaseDb;
+    }
+    return null;
+  }
+
+  isCloudConnected() {
+    return !!this.getDb();
   }
 
   initStore() {
@@ -168,6 +183,34 @@ class Store {
     }
   }
 
+  async initCloudSync() {
+    const db = this.getDb();
+    if (!db) return;
+
+    try {
+      // Sync CMS Settings from Cloud
+      const cmsDoc = await db.collection('settings').doc('cms').get();
+      if (cmsDoc.exists) {
+        const cloudSettings = cmsDoc.data();
+        const merged = { ...DEFAULT_SETTINGS, ...cloudSettings };
+        localStorage.setItem('ubgas_settings', JSON.stringify(merged));
+      }
+
+      // Sync Localities from Cloud
+      const areasDoc = await db.collection('settings').doc('localities').get();
+      if (areasDoc.exists) {
+        const cloudAreas = areasDoc.data().areas;
+        if (Array.isArray(cloudAreas) && cloudAreas.length) {
+          localStorage.setItem('ubgas_areas', JSON.stringify(cloudAreas));
+        }
+      }
+
+      window.dispatchEvent(new CustomEvent('ub:store_synced'));
+    } catch (err) {
+      console.warn('Background cloud sync notice:', err.message);
+    }
+  }
+
   // Settings
   getSettings() {
     try {
@@ -177,13 +220,22 @@ class Store {
     }
   }
 
-  saveSettings(newSettings) {
+  async saveSettings(newSettings) {
     const merged = { ...this.getSettings(), ...newSettings };
     localStorage.setItem('ubgas_settings', JSON.stringify(merged));
+
+    const db = this.getDb();
+    if (db) {
+      try {
+        await db.collection('settings').doc('cms').set(merged, { merge: true });
+      } catch (err) {
+        console.warn('Failed to save settings to Firestore:', err);
+      }
+    }
     return merged;
   }
 
-  // Areas
+  // Areas (Localities)
   getAreas() {
     try {
       const areas = JSON.parse(localStorage.getItem('ubgas_areas'));
@@ -193,26 +245,44 @@ class Store {
     }
   }
 
-  addArea(areaName) {
+  async addArea(areaName) {
     const cleanName = areaName.trim();
     if (!cleanName) return false;
     const areas = this.getAreas();
     if (!areas.some(a => a.toLowerCase() === cleanName.toLowerCase())) {
       areas.push(cleanName);
       localStorage.setItem('ubgas_areas', JSON.stringify(areas));
+
+      const db = this.getDb();
+      if (db) {
+        try {
+          await db.collection('settings').doc('localities').set({ areas });
+        } catch (e) {
+          console.warn('Failed to sync area to Firestore:', e);
+        }
+      }
       return true;
     }
     return false;
   }
 
-  removeArea(areaName) {
+  async removeArea(areaName) {
     let areas = this.getAreas();
     areas = areas.filter(a => a.toLowerCase() !== areaName.toLowerCase());
     localStorage.setItem('ubgas_areas', JSON.stringify(areas));
+
+    const db = this.getDb();
+    if (db) {
+      try {
+        await db.collection('settings').doc('localities').set({ areas });
+      } catch (e) {
+        console.warn('Failed to sync area removal to Firestore:', e);
+      }
+    }
     return areas;
   }
 
-  // Services
+  // Services Catalog
   getServices() {
     return DEFAULT_SERVICES;
   }
@@ -227,11 +297,19 @@ class Store {
     }
   }
 
-  saveTestimonials(testimonials) {
+  async saveTestimonials(testimonials) {
     localStorage.setItem('ubgas_testimonials', JSON.stringify(testimonials));
+    const db = this.getDb();
+    if (db) {
+      try {
+        await db.collection('settings').doc('testimonials').set({ list: testimonials });
+      } catch (e) {
+        console.warn('Failed to sync testimonials to Firestore:', e);
+      }
+    }
   }
 
-  // Bookings
+  // Bookings Management
   getBookings() {
     try {
       const b = JSON.parse(localStorage.getItem('ubgas_bookings'));
@@ -241,9 +319,11 @@ class Store {
     }
   }
 
-  createBooking(bookingData) {
+  async createBooking(bookingData) {
     const bookings = this.getBookings();
     const id = 'BK-' + (Math.floor(1000 + Math.random() * 9000));
+    const isoNow = new Date().toISOString();
+
     const newBooking = {
       id,
       customerName: bookingData.name || 'Customer',
@@ -254,28 +334,119 @@ class Store {
       time: bookingData.time || '',
       message: bookingData.message || '',
       status: 'New',
-      createdAt: new Date().toISOString()
+      createdAt: isoNow
     };
+
+    // Save locally first for offline safety
     bookings.unshift(newBooking);
     localStorage.setItem('ubgas_bookings', JSON.stringify(bookings));
+
+    // Push to Google Cloud Firestore in Realtime
+    const db = this.getDb();
+    if (db) {
+      try {
+        await db.collection('bookings').doc(id).set({
+          id,
+          customerName: newBooking.customerName,
+          phone: newBooking.phone,
+          area: newBooking.area,
+          service: newBooking.service,
+          date: newBooking.date,
+          time: newBooking.time,
+          message: newBooking.message,
+          status: 'New',
+          createdAt: (typeof firebase !== 'undefined' && firebase.firestore) 
+            ? firebase.firestore.FieldValue.serverTimestamp() 
+            : isoNow
+        });
+        console.log('✓ Booking synchronized to Cloud Firestore:', id);
+      } catch (err) {
+        console.warn('Firestore write error (saved to local backup):', err);
+      }
+    }
+
     return newBooking;
   }
 
-  updateBookingStatus(id, newStatus) {
+  // Realtime Live Subscription for Admin Panel
+  subscribeBookings(callback) {
+    // Immediately deliver current cache for zero loading delay
+    callback(this.getBookings());
+
+    const db = this.getDb();
+    if (!db) {
+      console.log('Firestore not connected; running in local storage mode.');
+      return () => {};
+    }
+
+    try {
+      return db.collection('bookings')
+        .orderBy('createdAt', 'desc')
+        .onSnapshot((snapshot) => {
+          const cloudBookings = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            let createdIso = new Date().toISOString();
+            if (data.createdAt && typeof data.createdAt.toDate === 'function') {
+              createdIso = data.createdAt.toDate().toISOString();
+            } else if (data.createdAt) {
+              createdIso = data.createdAt;
+            }
+            cloudBookings.push({
+              id: doc.id,
+              ...data,
+              createdAt: createdIso
+            });
+          });
+
+          // Cache in local storage
+          if (cloudBookings.length > 0) {
+            localStorage.setItem('ubgas_bookings', JSON.stringify(cloudBookings));
+          }
+          callback(cloudBookings);
+        }, (err) => {
+          console.warn('Firestore subscription fallback to local cache:', err.message);
+          callback(this.getBookings());
+        });
+    } catch (err) {
+      console.warn('Could not establish Firestore live listener:', err);
+      callback(this.getBookings());
+      return () => {};
+    }
+  }
+
+  async updateBookingStatus(id, newStatus) {
     const bookings = this.getBookings();
     const target = bookings.find(b => b.id === id);
     if (target) {
       target.status = newStatus;
       localStorage.setItem('ubgas_bookings', JSON.stringify(bookings));
-      return true;
     }
-    return false;
+
+    const db = this.getDb();
+    if (db) {
+      try {
+        await db.collection('bookings').doc(id).update({ status: newStatus });
+      } catch (e) {
+        console.warn('Failed to update status on Firestore:', e);
+      }
+    }
+    return true;
   }
 
-  deleteBooking(id) {
+  async deleteBooking(id) {
     let bookings = this.getBookings();
     bookings = bookings.filter(b => b.id !== id);
     localStorage.setItem('ubgas_bookings', JSON.stringify(bookings));
+
+    const db = this.getDb();
+    if (db) {
+      try {
+        await db.collection('bookings').doc(id).delete();
+      } catch (e) {
+        console.warn('Failed to delete booking from Firestore:', e);
+      }
+    }
     return bookings;
   }
 

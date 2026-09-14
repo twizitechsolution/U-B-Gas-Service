@@ -85,7 +85,10 @@
       <div class="admin-top-nav">
         <div>
           <h1>Operations Dashboard</h1>
-          <p style="color:#94a3b8;font-size:0.9rem">Live monitoring of doorstep bookings and service coverage.</p>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px;">
+            <p style="color:#94a3b8;font-size:0.9rem;margin:0;">Live monitoring of doorstep bookings and service coverage.</p>
+            <span id="cloudStatusBadge" style="background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-size:0.75rem;padding:3px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:5px;font-weight:600;">🟢 Cloud Firestore Live Sync</span>
+          </div>
         </div>
         <div class="admin-quick-actions">
           <button type="button" class="btn btn-sm btn-outline" id="exportCsvBtn">
@@ -303,6 +306,10 @@
   </div>
 
   <!-- Scripts -->
+  <!-- Firebase Cloud Firestore SDK (Compat v10 for browser CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
   <script src="js/store.js"></script>
   <script src="js/admin.js"></script>
 </body>

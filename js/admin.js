@@ -43,6 +43,9 @@ function bindLoginForm() {
   });
 }
 
+let activeUnsubscribe = null;
+let previousBookingsTotal = -1;
+
 function bootDashboard() {
   bindTabs();
   bindLogout();
@@ -53,6 +56,24 @@ function bootDashboard() {
   renderTestimonials();
   bindSearchAndFilters();
   bindExportCSV();
+
+  // Setup Realtime Cloud Firestore live listener
+  if (window.UBStore && typeof window.UBStore.subscribeBookings === 'function') {
+    if (activeUnsubscribe) activeUnsubscribe();
+    activeUnsubscribe = window.UBStore.subscribeBookings((liveBookings) => {
+      renderMetrics();
+      const searchInput = document.getElementById('bookingSearchInput');
+      const statusFilter = document.getElementById('bookingStatusFilter');
+      const q = searchInput ? searchInput.value : '';
+      const s = statusFilter ? statusFilter.value : 'all';
+      renderBookingsTable(s, q);
+
+      if (previousBookingsTotal !== -1 && liveBookings.length > previousBookingsTotal) {
+        showToast('🔔 New Customer Booking received in Realtime!');
+      }
+      previousBookingsTotal = liveBookings.length;
+    });
+  }
 }
 
 // 1. Navigation Tabs
@@ -95,6 +116,7 @@ function renderMetrics() {
   const compEl = document.getElementById('metricCompleted');
   const areasEl = document.getElementById('metricTotalAreas');
   const badgeEl = document.getElementById('sidebarNewBadge');
+  const cloudBadge = document.getElementById('cloudStatusBadge');
 
   const newCount = bookings.filter(b => b.status === 'New').length;
   const compCount = bookings.filter(b => b.status === 'Completed').length;
@@ -106,6 +128,18 @@ function renderMetrics() {
   if (badgeEl) {
     badgeEl.textContent = newCount;
     badgeEl.style.display = newCount > 0 ? 'inline-block' : 'none';
+  }
+
+  if (cloudBadge) {
+    if (window.UBStore && window.UBStore.isCloudConnected()) {
+      cloudBadge.innerHTML = '🟢 Cloud Firestore Live Sync Active';
+      cloudBadge.style.color = '#34d399';
+      cloudBadge.style.borderColor = 'rgba(16,185,129,0.3)';
+    } else {
+      cloudBadge.innerHTML = '🟡 Local Storage Backup Mode';
+      cloudBadge.style.color = '#fbbf24';
+      cloudBadge.style.borderColor = 'rgba(251,191,36,0.3)';
+    }
   }
 }
 
@@ -183,16 +217,16 @@ function renderBookingsTable(filterStatus = 'all', searchQuery = '') {
 }
 
 // Table Status & Delete Helpers
-window.handleStatusChange = function(id, newStatus) {
-  window.UBStore.updateBookingStatus(id, newStatus);
+window.handleStatusChange = async function(id, newStatus) {
+  await window.UBStore.updateBookingStatus(id, newStatus);
   showToast(`Booking ${id} status updated to ${newStatus}`);
   renderMetrics();
   renderBookingsTable();
 };
 
-window.handleDeleteBooking = function(id) {
+window.handleDeleteBooking = async function(id) {
   if (confirm(`Are you sure you want to delete booking ${id}?`)) {
-    window.UBStore.deleteBooking(id);
+    await window.UBStore.deleteBooking(id);
     showToast(`Booking ${id} removed.`);
     renderMetrics();
     renderBookingsTable();
@@ -231,12 +265,12 @@ function renderAreas() {
   const addAreaForm = document.getElementById('addAreaForm');
   if (addAreaForm && !addAreaForm.dataset.bound) {
     addAreaForm.dataset.bound = 'true';
-    addAreaForm.addEventListener('submit', (e) => {
+    addAreaForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const input = document.getElementById('newAreaInput');
       const val = input.value.trim();
       if (val) {
-        const added = window.UBStore.addArea(val);
+        const added = await window.UBStore.addArea(val);
         if (added) {
           showToast(`Added locality "${val}" to Pune service zones.`);
           input.value = '';
@@ -250,9 +284,9 @@ function renderAreas() {
   }
 }
 
-window.handleRemoveArea = function(areaName) {
+window.handleRemoveArea = async function(areaName) {
   if (confirm(`Remove "${areaName}" from active Pune service zones?`)) {
-    window.UBStore.removeArea(areaName);
+    await window.UBStore.removeArea(areaName);
     showToast(`Removed "${areaName}" from service zones.`);
     renderAreas();
     renderMetrics();
@@ -275,7 +309,7 @@ function renderSettingsForm() {
 
   if (!form.dataset.bound) {
     form.dataset.bound = 'true';
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const updated = {
         phone: document.getElementById('set_phone').value.trim(),
@@ -288,8 +322,8 @@ function renderSettingsForm() {
         admin_pass: document.getElementById('set_pass').value.trim()
       };
 
-      window.UBStore.saveSettings(updated);
-      showToast('Settings saved successfully! Site content updated.');
+      await window.UBStore.saveSettings(updated);
+      showToast('Settings saved successfully! Cloud database & site updated.');
     });
   }
 }

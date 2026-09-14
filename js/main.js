@@ -198,8 +198,14 @@ function initBookingForms() {
     if (!inp.value) inp.value = todayStr;
   });
 
+  // Re-run dynamic population when cloud settings are synced
+  window.addEventListener('ub:store_synced', () => {
+    initSettings();
+    initAreas();
+  });
+
   document.querySelectorAll('form[data-booking-form], #enquiry-form').forEach(form => {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const nameInput = form.querySelector('[name="customerName"]') || form.querySelector('#name') || form.querySelector('[name="name"]');
@@ -223,23 +229,41 @@ function initBookingForms() {
         return;
       }
 
-      // Save to Store
-      const newBooking = window.UBStore ? window.UBStore.createBooking({
-        name,
-        phone,
-        area,
-        service,
-        date,
-        time,
-        message
-      }) : { id: 'BK-' + Math.floor(1000 + Math.random() * 9000), customerName: name, phone, area, service, date, time, message };
+      // Visual submitting state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '⏳ Submitting Booking...';
+      }
 
-      // Show confirmation modal
-      showBookingModal(newBooking);
+      // Save to Cloud Store (with local fallback)
+      let newBooking = null;
+      try {
+        newBooking = window.UBStore ? await window.UBStore.createBooking({
+          name,
+          phone,
+          area,
+          service,
+          date,
+          time,
+          message
+        }) : { id: 'BK-' + Math.floor(1000 + Math.random() * 9000), customerName: name, phone, area, service, date, time, message };
+      } catch (err) {
+        console.warn('Booking create fallback:', err);
+        newBooking = { id: 'BK-' + Math.floor(1000 + Math.random() * 9000), customerName: name, phone, area, service, date, time, message };
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
+      }
 
-      // Reset form & restore default date
-      form.reset();
-      if (dateInput) dateInput.value = todayStr;
+      if (newBooking) {
+        showBookingModal(newBooking);
+        form.reset();
+        if (dateInput) dateInput.value = todayStr;
+      }
     });
   });
 }
